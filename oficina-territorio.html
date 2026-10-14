@@ -89,6 +89,9 @@ input:focus-visible,textarea:focus-visible,button:focus-visible{outline:3px soli
 details{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
 summary{cursor:pointer;font-family:var(--display);font-weight:700;font-size:1.15rem;color:var(--jenipapo)}
 details p{margin-top:10px;font-size:.98rem}
+details.wide{grid-column:1/-1;border-color:var(--urucum);background:var(--urucum-soft)}
+details.wide summary{color:var(--urucum)}
+details.wide .roda{background:var(--surface)}
 details .roda{margin-top:10px;padding:10px 12px;border-radius:8px;background:var(--mata-soft);color:var(--ink);font-size:.95rem}
 
 .refs{display:grid;gap:10px;padding-left:1.1em;margin:0}
@@ -173,6 +176,7 @@ footer{padding-block:28px;border-top:1px solid var(--line);font-size:.9rem;color
     <details open><summary>Dados de treino</summary><p>A IA aprende com textos que já estão na internet. Se a história do seu bairro nunca foi escrita online, para a IA ela quase não existe.</p><div class="roda">Para a roda: quem escreve sobre o nosso território na internet? Somos nós?</div></details>
     <details><summary>Viés</summary><p>Quando um grupo aparece muito mais nos dados, a IA passa a tratar o jeito dele de viver como o normal. O resto vira exceção ou estereótipo.</p><div class="roda">Para a roda: alguma resposta descreveu a gente como "exótico" ou "carente"?</div></details>
     <details><summary>Alucinação</summary><p>A IA prevê a próxima palavra mais provável. Quando não sabe, ela não para: escreve algo que soa certo e pode ser inventado.</p><div class="roda">Para a roda: como a gente percebeu que era invenção? Quem sabia a verdade?</div></details>
+    <details class="wide"><summary>Racismo algorítmico</summary><p>O viés não é um defeito neutro da máquina. Ele reproduz o racismo que já existe nos dados e nas escolhas de quem constrói o sistema. O estudo Gender Shades (MIT, 2018) mostrou que sistemas comerciais de análise facial erravam até 34,7% com mulheres negras e menos de 1% com homens brancos. No Brasil, a Rede de Observatórios da Segurança identificou que 90,5% das pessoas presas por reconhecimento facial em 2019 eram negras.</p><p>Por isso a oficina separa duas perguntas: a IA errou sobre nós? E esse erro recai mais sobre quem já é discriminado?</p><div class="roda">Para a roda: quando a IA descreveu a nossa comunidade, a cor da pele, o cabelo ou o bairro mudaram o tom da resposta? Quem sai prejudicado quando um sistema desses decide sozinho?</div></details>
     <details><summary>Quem decide</summary><p>Os grandes modelos são feitos por poucas empresas, quase todas no Norte Global. Línguas indígenas e africanas e saberes orais ficam de fora.</p><div class="roda">Para a roda: o que a nossa comunidade ganharia se participasse dessas decisões?</div></details>
   </div>
 </section>
@@ -184,11 +188,11 @@ footer{padding-block:28px;border-top:1px solid var(--line);font-size:.9rem;color
   <ul class="refs read">
     <li><b>UNESCO, Referencial de competências em IA para estudantes (2024):</b> a oficina trabalha a mentalidade centrada no ser humano e a ética da IA antes da técnica.</li>
     <li><b>UNICEF, Orientações de políticas sobre IA para crianças:</b> participação, inclusão e proteção de dados de jovens na própria atividade, incluindo consentimento no arquivo do território.</li>
+    <li><b>Racismo algorítmico:</b> Tarcízio Silva, <i>Racismo Algorítmico</i> (2022); Joy Buolamwini e Timnit Gebru, <i>Gender Shades</i> (2018); Safiya Noble, <i>Algoritmos da Opressão</i>.</li>
     <li><b>Design Thinking com jovens:</b> roda de escuta, investigação, cocriação e devolutiva, metodologia aplicada em formações com estudantes em Angola e no Brasil.</li>
   </ul>
 </section>
 
-<footer>Proposta elaborada por Daniel Quiteque para conversa com a equipe do TekoIA · IA.Edu. Os registros do laboratório ficam salvos apenas neste navegador.</footer>
 </div>
 
 <script>
