@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>body{margin:0}</style>
+<title>A IA conhece o meu território?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;700&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+/* Layout: caderno de oficina — coluna de leitura única, com o laboratório como a peça larga no meio */
+:root{
+  --bg:#f6f7f2; --surface:#ffffff; --ink:#1d2a22; --muted:#5b6b60; --line:#d9e0d6;
+  --urucum:#b8401e; --urucum-soft:#f6e3db; --mata:#2f5d45; --mata-soft:#e2ede6;
+  --jenipapo:#24324a;
+  --ok:#2f7a4c; --warn:#a86a0c; --bad:#b3362a; --hole:#5b4a99; --stereo:#8a3f74;
+  --display:"Zilla Slab", Georgia, serif;
+  --body:"Source Sans 3", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#141a16; --surface:#1c241f; --ink:#e7ede8; --muted:#a3b2a8; --line:#2f3b33;
+  --urucum:#ec7a55; --urucum-soft:#3a2219; --mata:#7cc59c; --mata-soft:#1f3328; --jenipapo:#b9c6e0;
+  --ok:#6fcf95; --warn:#e2a646; --bad:#ef7b6e; --hole:#a89ae6; --stereo:#d98bc2; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141a16; --surface:#1c241f; --ink:#e7ede8; --muted:#a3b2a8; --line:#2f3b33;
+  --urucum:#ec7a55; --urucum-soft:#3a2219; --mata:#7cc59c; --mata-soft:#1f3328; --jenipapo:#b9c6e0;
+  --ok:#6fcf95; --warn:#e2a646; --bad:#ef7b6e; --hole:#a89ae6; --stereo:#d98bc2; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6;padding-inline:16px;padding-block:0 64px}
+.wrap{max-width:980px;margin:0 auto}
+.read{max-width:68ch}
+h1,h2,h3{font-family:var(--display);line-height:1.15;text-wrap:balance;margin:0}
+h1{font-size:clamp(2.1rem,6vw,3.4rem);font-weight:700;color:var(--jenipapo)}
+h2{font-size:1.75rem;font-weight:700;color:var(--jenipapo)}
+h3{font-size:1.2rem;font-weight:700}
+p{margin:0}
+.eyebrow{font-size:.78rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--urucum)}
+section{padding-block:44px;border-top:1px solid var(--line);display:grid;gap:20px}
+header{padding-block:48px 36px;display:grid;gap:16px}
+.lede{font-size:1.18rem;color:var(--muted)}
+.meta{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:.92rem;color:var(--muted)}
+.meta b{color:var(--ink)}
+
+.pillars{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.pillar{display:grid;gap:6px;padding-top:12px;border-top:3px solid var(--mata)}
+.pillar .k{font-family:var(--display);font-size:1.3rem;font-weight:700;color:var(--mata)}
+
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:0}
+.steps li{display:grid;grid-template-columns:72px 1fr;gap:16px;padding-block:16px;border-bottom:1px dashed var(--line)}
+.steps .t{font-variant-numeric:tabular-nums;font-weight:700;color:var(--urucum);font-size:.95rem;padding-top:3px}
+.steps li > div{min-width:0;display:grid;gap:4px}
+.steps .who{font-size:.9rem;color:var(--muted)}
+.total{font-size:.95rem;color:var(--muted)}
+
+/* Laboratório */
+.lab{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:24px;display:grid;gap:22px}
+.lab-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px}
+@media (max-width:760px){.lab-grid{grid-template-columns:1fr}}
+label{font-weight:600;font-size:.95rem;display:block;margin-bottom:6px}
+input[type=text],textarea{width:100%;font:inherit;font-size:1rem;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+textarea{min-height:130px;resize:vertical}
+input:focus-visible,textarea:focus-visible,button:focus-visible{outline:3px solid var(--urucum);outline-offset:2px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{font:inherit;font-weight:700;border-radius:8px;padding:10px 16px;border:1px solid transparent;cursor:pointer}
+.btn-primary{background:var(--urucum);color:#fff}
+.btn-ghost{background:transparent;border-color:var(--line);color:var(--ink)}
+.btn:disabled{opacity:.55;cursor:default}
+.hint{font-size:.88rem;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:inherit;font-size:.92rem;font-weight:600;padding:7px 12px;border-radius:999px;border:1.5px solid var(--c);color:var(--c);background:transparent;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--c);color:var(--surface)}
+.c-ok{--c:var(--ok)} .c-warn{--c:var(--warn)} .c-bad{--c:var(--bad)} .c-hole{--c:var(--hole)} .c-stereo{--c:var(--stereo)}
+
+.tally{display:grid;gap:8px}
+.bar{display:flex;height:16px;border-radius:999px;overflow:hidden;background:var(--line)}
+.bar span{display:block;height:100%}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.88rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:middle}
+
+.log{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.entry{border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:grid;gap:8px;background:var(--bg)}
+.entry .q{font-weight:700}
+.entry .a{font-size:.95rem;color:var(--muted);white-space:pre-wrap;max-height:9.6em;overflow:auto}
+.entry .foot{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:.85rem}
+.tag{font-weight:700;font-size:.8rem;padding:2px 9px;border-radius:999px;background:var(--c);color:var(--surface)}
+.ex{font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:1px 6px}
+.del{margin-left:auto;font:inherit;font-size:.85rem;background:none;border:none;color:var(--muted);cursor:pointer;text-decoration:underline}
+
+.concepts{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+details{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+summary{cursor:pointer;font-family:var(--display);font-weight:700;font-size:1.15rem;color:var(--jenipapo)}
+details p{margin-top:10px;font-size:.98rem}
+details .roda{margin-top:10px;padding:10px 12px;border-radius:8px;background:var(--mata-soft);color:var(--ink);font-size:.95rem}
+
+.refs{display:grid;gap:10px;padding-left:1.1em;margin:0}
+.refs li{padding-left:4px}
+.quote{font-family:var(--display);font-size:1.35rem;line-height:1.35;color:var(--mata);max-width:40ch}
+footer{padding-block:28px;border-top:1px solid var(--line);font-size:.9rem;color:var(--muted)}
+@media (prefers-reduced-motion:no-preference){.chip,.btn{transition:background .15s,color .15s}}
+</style>
+
+<div class="wrap">
+<header>
+  <span class="eyebrow">Proposta de oficina · Letramento crítico em IA</span>
+  <h1>A IA conhece o meu território?</h1>
+  <p class="lede read">Uma oficina em que jovens investigam o que a inteligência artificial sabe, erra e apaga sobre o lugar onde vivem. E depois produzem o conhecimento que falta, junto com quem guarda a memória da comunidade.</p>
+  <div class="meta"><span><b>Público:</b> jovens de 15 a 24 anos e educadores</span><span><b>Duração:</b> 3 horas</span><span><b>Grupo:</b> 15 a 30 pessoas</span><span><b>Material:</b> 1 celular com internet por grupo</span></div>
+</header>
+
+<section>
+  <span class="eyebrow">Para que serve</span>
+  <h2>Três movimentos, alinhados ao TekoIA</h2>
+  <div class="pillars">
+    <div class="pillar"><span class="k">Capacitar</span><p>Entender, testando na prática, que a IA aprende com dados e que dados têm origem, dono e lacunas.</p></div>
+    <div class="pillar"><span class="k">Cocriar</span><p>Transformar os erros encontrados em um arquivo do território, feito com mais velhos, lideranças e mestres de saberes.</p></div>
+    <div class="pillar"><span class="k">Influenciar</span><p>Fechar com uma carta-proposta do grupo: o que a IA precisa respeitar para servir à nossa comunidade.</p></div>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">Roteiro</span>
+  <h2>Como a oficina acontece</h2>
+  <ol class="steps">
+    <li><span class="t">20 min</span><div><h3>Roda de abertura</h3><p>Cada pessoa traz uma coisa que só quem é do território sabe: uma comida, uma palavra, uma festa, uma história.</p><span class="who">Essas respostas viram as perguntas da etapa seguinte.</span></div></li>
+    <li><span class="t">50 min</span><div><h3>Investigação com a IA</h3><p>Em grupos, os jovens perguntam ao chatbot sobre esses saberes e classificam cada resposta no laboratório abaixo.</p><span class="who">Ninguém precisa saber programar.</span></div></li>
+    <li><span class="t">30 min</span><div><h3>Por que a IA erra?</h3><p>Com o painel de resultados na tela, o grupo discute dados de treino, viés, alucinação e quem decide como a IA é feita.</p><span class="who">Use os cartões de conceitos como roteiro da conversa.</span></div></li>
+    <li><span class="t">50 min</span><div><h3>Arquivo do território</h3><p>Os grupos entrevistam pessoas da comunidade e registram, com consentimento, as respostas certas para o que a IA errou ou apagou.</p><span class="who">O arquivo pertence à comunidade, não à plataforma.</span></div></li>
+    <li><span class="t">30 min</span><div><h3>Carta-proposta</h3><p>O grupo escreve o que a IA precisa respeitar para ser útil ali. A carta alimenta o Grupo de Trabalho Jovem e o diálogo com gestores públicos.</p></div></li>
+  </ol>
+  <p class="total">Total: 180 minutos.</p>
+</section>
+
+<section id="lab">
+  <span class="eyebrow">Laboratório · etapa 2</span>
+  <h2>Pergunte, leia com atenção e classifique</h2>
+  <p class="read">Faça uma pergunta sobre o seu território. A resposta pode vir da IA aqui mesmo ou ser colada de qualquer chatbot. Depois o grupo decide o que aconteceu com ela.</p>
+  <div class="lab">
+    <div class="lab-grid">
+      <div style="display:grid;gap:14px;min-width:0">
+        <div><label for="terr">Território</label><input type="text" id="terr" value="Pouso Alegre, sul de Minas Gerais"></div>
+        <div><label for="q">Pergunta</label><input type="text" id="q" value="Qual é o prato típico da festa mais importante da minha cidade e quem prepara?"></div>
+        <div class="row"><button class="btn btn-primary" id="ask" type="button">Perguntar à IA</button><button class="btn btn-ghost" id="stop" type="button" hidden>Parar</button><span class="hint" id="askNote">Ou cole ao lado a resposta de outro chatbot.</span></div>
+      </div>
+      <div style="display:grid;gap:14px;min-width:0">
+        <div><label for="a">Resposta da IA</label><textarea id="a" placeholder="A resposta aparece aqui, ou cole uma resposta."></textarea></div>
+      </div>
+    </div>
+    <div style="display:grid;gap:10px">
+      <span style="font-weight:600">O que aconteceu com essa resposta?</span>
+      <div class="chips" id="chips">
+        <button type="button" class="chip c-ok" data-k="ok" aria-pressed="false">Acertou</button>
+        <button type="button" class="chip c-warn" data-k="warn" aria-pressed="false">Acertou em parte</button>
+        <button type="button" class="chip c-bad" data-k="bad" aria-pressed="false">Inventou</button>
+        <button type="button" class="chip c-hole" data-k="hole" aria-pressed="false">Apagou ou ignorou</button>
+        <button type="button" class="chip c-stereo" data-k="stereo" aria-pressed="false">Estereotipou</button>
+      </div>
+      <div><label for="n">Como a comunidade responderia?</label><input type="text" id="n" placeholder="Ex.: quem sabe é dona Cida, da associação do bairro"></div>
+      <div class="row"><button class="btn btn-primary" id="save" type="button">Registrar no painel</button><span class="hint" id="saveNote"></span></div>
+    </div>
+
+    <div class="tally">
+      <h3>Painel do grupo</h3>
+      <div class="bar" id="bar" role="img" aria-label="Distribuição das classificações"></div>
+      <div class="legend" id="legend"></div>
+    </div>
+    <ul class="log" id="log"></ul>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">Etapa 3 · roteiro da conversa</span>
+  <h2>Por que a IA erra sobre nós?</h2>
+  <div class="concepts">
+    <details open><summary>Dados de treino</summary><p>A IA aprende com textos que já estão na internet. Se a história do seu bairro nunca foi escrita online, para a IA ela quase não existe.</p><div class="roda">Para a roda: quem escreve sobre o nosso território na internet? Somos nós?</div></details>
+    <details><summary>Viés</summary><p>Quando um grupo aparece muito mais nos dados, a IA passa a tratar o jeito dele de viver como o normal. O resto vira exceção ou estereótipo.</p><div class="roda">Para a roda: alguma resposta descreveu a gente como "exótico" ou "carente"?</div></details>
+    <details><summary>Alucinação</summary><p>A IA prevê a próxima palavra mais provável. Quando não sabe, ela não para: escreve algo que soa certo e pode ser inventado.</p><div class="roda">Para a roda: como a gente percebeu que era invenção? Quem sabia a verdade?</div></details>
+    <details><summary>Quem decide</summary><p>Os grandes modelos são feitos por poucas empresas, quase todas no Norte Global. Línguas indígenas e africanas e saberes orais ficam de fora.</p><div class="roda">Para a roda: o que a nossa comunidade ganharia se participasse dessas decisões?</div></details>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">Fundamentos</span>
+  <h2>Em que a proposta se apoia</h2>
+  <p class="quote">A IA sugere. Quem conhece o território decide o que é verdade sobre ele.</p>
+  <ul class="refs read">
+    <li><b>UNESCO, Referencial de competências em IA para estudantes (2024):</b> a oficina trabalha a mentalidade centrada no ser humano e a ética da IA antes da técnica.</li>
+    <li><b>UNICEF, Orientações de políticas sobre IA para crianças:</b> participação, inclusão e proteção de dados de jovens na própria atividade, incluindo consentimento no arquivo do território.</li>
+    <li><b>Design Thinking com jovens:</b> roda de escuta, investigação, cocriação e devolutiva, metodologia aplicada em formações com estudantes em Angola e no Brasil.</li>
+  </ul>
+</section>
+
+<footer>Proposta elaborada por Daniel Quiteque para conversa com a equipe do TekoIA · IA.Edu. Os registros do laboratório ficam salvos apenas neste navegador.</footer>
+</div>
+
+<script>
+(function(){
+  const KINDS={ok:{label:"Acertou",cls:"c-ok"},warn:{label:"Acertou em parte",cls:"c-warn"},bad:{label:"Inventou",cls:"c-bad"},hole:{label:"Apagou ou ignorou",cls:"c-hole"},stereo:{label:"Estereotipou",cls:"c-stereo"}};
+  const EXAMPLES=[
+    {ex:true,q:"Como se chama a dança de roda tradicional do meu bairro?",a:"Não há registros de uma dança específica nesse bairro. Danças comuns em Minas Gerais incluem a quadrilha e o forró.",k:"hole",n:"Congado, e o grupo ensaia na praça aos sábados."},
+    {ex:true,q:"Quem fundou a associação de moradores do bairro?",a:"A associação foi fundada em 1987 por José Ribeiro da Silva, líder comunitário conhecido na região.",k:"bad",n:"Foram três mulheres lavadeiras. O nome citado não existe."},
+    {ex:true,q:"Como vivem as famílias da zona rural do município?",a:"As famílias rurais vivem em condições precárias, com pouco acesso a tecnologia e educação.",k:"stereo",n:"Tem cooperativa de morango, escola técnica e jovens produzindo vídeo."}
+  ];
+  const KEY="tekoia-lab-v1";
+  let entries=[];
+  try{const s=localStorage.getItem(KEY); entries=s?JSON.parse(s):EXAMPLES.slice();}catch(e){entries=EXAMPLES.slice();}
+  if(!Array.isArray(entries)) entries=EXAMPLES.slice();
+  const persist=()=>{try{localStorage.setItem(KEY,JSON.stringify(entries));}catch(e){}};
+
+  const $=id=>document.getElementById(id);
+  let picked=null;
+  $("chips").addEventListener("click",e=>{
+    const b=e.target.closest(".chip"); if(!b) return;
+    picked=b.dataset.k;
+    document.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",String(c===b)));
+  });
+
+  function render(){
+    const counts={ok:0,warn:0,bad:0,hole:0,stereo:0};
+    entries.forEach(x=>{if(counts[x.k]!==undefined)counts[x.k]++;});
+    const total=entries.length||1;
+    const bar=$("bar"), leg=$("legend"); bar.innerHTML=""; leg.innerHTML="";
+    Object.keys(KINDS).forEach(k=>{
+      const s=document.createElement("span"); s.className=KINDS[k].cls; s.style.background="var(--c)"; s.style.width=(counts[k]/total*100)+"%"; bar.appendChild(s);
+      const l=document.createElement("span"); const i=document.createElement("i"); i.className=KINDS[k].cls; i.style.background="var(--c)";
+      l.appendChild(i); l.append(KINDS[k].label+": "+counts[k]); leg.appendChild(l);
+    });
+    const log=$("log"); log.innerHTML="";
+    entries.slice().reverse().forEach((x,ri)=>{
+      const idx=entries.length-1-ri;
+      const li=document.createElement("li"); li.className="entry";
+      const q=document.createElement("div"); q.className="q"; q.textContent=x.q;
+      const a=document.createElement("div"); a.className="a"; a.textContent="IA: "+x.a;
+      const f=document.createElement("div"); f.className="foot";
+      const t=document.createElement("span"); t.className="tag "+(KINDS[x.k]||KINDS.warn).cls; t.textContent=(KINDS[x.k]||KINDS.warn).label; f.appendChild(t);
+      if(x.ex){const e=document.createElement("span"); e.className="ex"; e.textContent="exemplo ilustrativo"; f.appendChild(e);}
+      const d=document.createElement("button"); d.className="del"; d.type="button"; d.textContent="Remover";
+      d.onclick=()=>{entries.splice(idx,1); persist(); render();}; f.appendChild(d);
+      li.append(q,a);
+      if(x.n){const n=document.createElement("div"); n.style.fontSize=".95rem"; n.textContent="Comunidade: "+x.n; li.appendChild(n);}
+      li.appendChild(f); log.appendChild(li);
+    });
+  }
+
+  $("save").addEventListener("click",()=>{
+    const q=$("q").value.trim(), a=$("a").value.trim(), n=$("n").value.trim();
+    if(!q||!a){$("saveNote").textContent="Preencha a pergunta e a resposta antes de registrar.";return;}
+    if(!picked){$("saveNote").textContent="Escolha o que aconteceu com a resposta.";return;}
+    entries.push({q,a,k:picked,n}); persist(); render();
+    $("a").value=""; $("n").value=""; picked=null;
+    document.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed","false"));
+    $("saveNote").textContent="Registrado no painel.";
+  });
+
+  // IA ao vivo (quando o visualizador permite)
+  const ask=$("ask"), stop=$("stop"), note=$("askNote");
+  let sample=null, ctl=null;
+  ask.disabled=true; note.textContent="Conectando à IA… Você também pode colar uma resposta ao lado.";
+  const ready=window.claude && window.claude.use ? window.claude.use("sample") : Promise.resolve(null);
+  ready.then(s=>{
+    sample=s;
+    if(!s){ask.hidden=true; note.textContent="Cole ao lado a resposta de qualquer chatbot.";return;}
+    ask.disabled=false; note.textContent="Ou cole ao lado a resposta de outro chatbot.";
+  }).catch(()=>{ask.hidden=true; note.textContent="Cole ao lado a resposta de qualquer chatbot.";});
+
+  ask.addEventListener("click",async()=>{
+    const q=$("q").value.trim(), terr=$("terr").value.trim();
+    if(!q){note.textContent="Escreva uma pergunta primeiro.";return;}
+    ctl=new AbortController(); ask.disabled=true; stop.hidden=false;
+    $("a").value="Pensando…";
+    try{
+      await sample("Responda em português do Brasil, em até 120 palavras, como um assistente geral responderia.\n\nLugar: "+terr+"\nPergunta: "+q,{
+        modelTier:"quick", cache:false, signal:ctl.signal, onText:({text})=>{$("a").value=text;}
+      });
+      note.textContent="Agora leia com o grupo e classifique.";
+    }catch(e){
+      $("a").value=e && e.text ? e.text : "";
+      if(e && e.code==="not_granted"||e&&e.code==="sampling_disabled"){ask.hidden=true; note.textContent="A IA não foi liberada aqui. Cole a resposta de outro chatbot.";}
+      else if(e && e.code==="rate_limited"){note.textContent="Muitas perguntas seguidas. Espere um pouco e tente de novo.";}
+      else if(e && e.code!=="cancelled"){note.textContent="A IA não respondeu agora. Tente de novo ou cole uma resposta.";}
+    }finally{ask.disabled=!sample; stop.hidden=true;}
+  });
+  stop.addEventListener("click",()=>ctl&&ctl.abort());
+
+  render();
+})();
+</script>

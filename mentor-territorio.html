@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>body{margin:0}</style>
+<title>Mentor do Território</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Layout: ferramenta em duas colunas — o jovem descreve à esquerda, o mentor devolve perguntas e um canvas à direita */
+:root{
+  --bg:#f3f5f8; --surface:#ffffff; --ink:#17202e; --muted:#5a6578; --line:#dbe1ea;
+  --indigo:#2d3f9e; --indigo-soft:#e5e9fa; --sol:#e0a21b; --sol-soft:#fbf1d8; --folha:#2e7d5b; --folha-soft:#e1f1e8; --alerta:#b0452f; --alerta-soft:#f7e4df;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11151d; --surface:#1a2030; --ink:#e8ecf3; --muted:#a2acbd; --line:#2c3448;
+  --indigo:#9fb0ff; --indigo-soft:#242d52; --sol:#f2c35a; --sol-soft:#3a3018; --folha:#75d1a6; --folha-soft:#1c3529; --alerta:#f08f78; --alerta-soft:#3d2420; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#11151d; --surface:#1a2030; --ink:#e8ecf3; --muted:#a2acbd; --line:#2c3448;
+  --indigo:#9fb0ff; --indigo-soft:#242d52; --sol:#f2c35a; --sol-soft:#3a3018; --folha:#75d1a6; --folha-soft:#1c3529; --alerta:#f08f78; --alerta-soft:#3d2420; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;padding-inline:16px;padding-block:0 56px}
+.wrap{max-width:1180px;margin:0 auto;display:grid;gap:24px}
+h1,h2,h3{font-family:var(--display);line-height:1.1;margin:0;text-wrap:balance}
+p{margin:0}
+header{padding-block:36px 4px;display:grid;gap:10px}
+h1{font-size:clamp(2rem,5vw,3rem);font-weight:800;letter-spacing:-.01em}
+h1 span{color:var(--indigo)}
+.sub{font-size:1.1rem;color:var(--muted);max-width:62ch}
+.principles{display:flex;flex-wrap:wrap;gap:8px}
+.principles span{font-size:.88rem;font-weight:700;padding:5px 11px;border-radius:999px;background:var(--indigo-soft);color:var(--indigo)}
+
+.app{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:24px;align-items:start}
+@media (max-width:880px){.app{grid-template-columns:1fr}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px;display:grid;gap:16px;min-width:0}
+.panel h2{font-size:1.35rem;font-weight:800}
+.step{font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+label{display:block;font-weight:700;margin-bottom:5px}
+label small{font-weight:400;color:var(--muted)}
+input,textarea{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+textarea{min-height:84px;resize:vertical}
+input:focus-visible,textarea:focus-visible,button:focus-visible{outline:3px solid var(--sol);outline-offset:2px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{font:inherit;font-weight:700;padding:11px 18px;border-radius:10px;border:1px solid transparent;cursor:pointer}
+.btn-primary{background:var(--indigo);color:var(--surface)}
+.btn-ghost{background:transparent;border-color:var(--line);color:var(--ink)}
+.btn:disabled{opacity:.55;cursor:default}
+.note{font-size:.9rem;color:var(--muted)}
+
+.status{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.badge{font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:6px;background:var(--sol-soft);color:var(--ink);border:1px solid var(--sol)}
+.badge.live{background:var(--folha-soft);border-color:var(--folha)}
+
+.block{display:grid;gap:10px}
+.block h3{font-size:1.1rem;font-weight:800}
+.qs{margin:0;padding-left:1.3em;display:grid;gap:8px}
+.qs li::marker{color:var(--indigo);font-weight:700}
+.canvas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (max-width:520px){.canvas{grid-template-columns:1fr}}
+.cell{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--bg);display:grid;gap:4px;align-content:start}
+.cell.wide{grid-column:1/-1}
+.cell .k{font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--indigo)}
+.cell.test{background:var(--folha-soft);border-color:var(--folha)}
+.cell.test .k{color:var(--folha)}
+.limits{border-radius:12px;padding:14px 16px;background:var(--alerta-soft);border:1px solid var(--alerta);display:grid;gap:8px}
+.limits h3{color:var(--alerta)}
+.limits ul{margin:0;padding-left:1.2em;display:grid;gap:4px}
+.listen{display:flex;flex-wrap:wrap;gap:8px}
+.listen span{font-size:.92rem;padding:5px 11px;border-radius:999px;border:1px solid var(--line);background:var(--surface)}
+.thinking{font-style:italic;color:var(--muted)}
+footer{font-size:.88rem;color:var(--muted);padding-top:8px;border-top:1px solid var(--line)}
+@media (prefers-reduced-motion:no-preference){.btn{transition:opacity .15s}}
+</style>
+
+<div class="wrap">
+<header>
+  <h1>Mentor do <span>Território</span></h1>
+  <p class="sub">Educação empreendedora com IA para jovens. Em vez de entregar um plano de negócio pronto, o mentor devolve perguntas, organiza as ideias do jovem e diz com clareza o que a IA não sabe sobre a comunidade.</p>
+  <div class="principles"><span>A IA pergunta mais do que responde</span><span>O saber local vem primeiro</span><span>Testar barato antes de gastar</span><span>A comunidade decide</span></div>
+</header>
+
+<div class="app">
+  <form class="panel" id="form" autocomplete="off">
+    <span class="step">Sua ideia</span>
+    <h2>Conte o que você vê na sua comunidade</h2>
+    <div><label for="prob">Qual problema ou oportunidade você percebe?</label><textarea id="prob">Os doces de banana e as quitandas que as avós fazem só aparecem na festa do padroeiro. O resto do ano ninguém vende, e as receitas estão se perdendo.</textarea></div>
+    <div><label for="lugar">Onde? <small>(bairro, cidade, comunidade)</small></label><input id="lugar" value="Comunidade rural no sul de Minas Gerais"></div>
+    <div><label for="quem">Quem sente esse problema?</label><input id="quem" value="As avós que sabem as receitas, os jovens sem renda e os moradores que sentem falta"></div>
+    <div><label for="saber">Que saberes, pessoas ou recursos a comunidade já tem?</label><textarea id="saber">Receitas de família, fogão a lenha na casa comunitária, bananal de vários sítios, grupo de WhatsApp do bairro.</textarea></div>
+    <div><label for="ideia">Você já tem uma ideia de solução? <small>(opcional)</small></label><input id="ideia" value="Vender as quitandas no fim de semana com os jovens cuidando das redes sociais"></div>
+    <div class="row"><button class="btn btn-primary" id="go" type="submit">Pedir orientação ao mentor</button><button class="btn btn-ghost" id="stop" type="button" hidden>Parar</button></div>
+    <p class="note" id="note">Conectando à IA…</p>
+  </form>
+
+  <div class="panel" id="out" aria-live="polite">
+    <div class="status"><span class="step">Devolutiva do mentor</span><span class="badge" id="badge">Exemplo pronto</span></div>
+    <div class="block"><h3>Perguntas para você pensar antes de começar</h3><ol class="qs" id="qs"></ol></div>
+    <div class="block"><h3>Canvas do território</h3><div class="canvas" id="canvas"></div></div>
+    <div class="limits"><h3>O que a IA não sabe sobre o seu território</h3><ul id="limits"></ul></div>
+    <div class="block"><h3>Quem ouvir antes de decidir</h3><div class="listen" id="listen"></div></div>
+  </div>
+</div>
+
+<footer>Protótipo de Daniel Quiteque para conversa com a equipe do TekoIA · IA.Edu. A devolutiva de exemplo foi escrita à mão para mostrar o formato. As respostas geradas usam a conta Claude de quem está vendo a página.</footer>
+</div>
+
+<script>
+(function(){
+  const EXAMPLE={
+    perguntas:[
+      "As avós querem vender as receitas ou preferem ensinar? Alguém já perguntou isso a elas?",
+      "Quem compraria fora da festa: os vizinhos, gente da cidade ou turistas de passagem?",
+      "Como a renda seria dividida entre quem tem a receita, quem cozinha e quem vende?",
+      "Que parte desse saber deve ficar só na comunidade e não ir para a internet?",
+      "Qual é o menor teste possível que vocês fazem neste fim de semana sem gastar dinheiro?"
+    ],
+    canvas:{
+      problema:"Receitas tradicionais só circulam uma vez por ano e estão se perdendo entre gerações.",
+      publico:"Moradores do bairro e da cidade vizinha que valorizam comida caseira e de memória.",
+      saberes:"Receitas das avós, fogão a lenha comunitário, banana dos sítios, rede de WhatsApp.",
+      proposta:"Quitandas de família feitas pela comunidade, com a história de cada receita contada por quem a criou.",
+      teste:"Fazer 30 unidades no próximo sábado, anunciar só no grupo do bairro e anotar quem comprou e o que disse."
+    },
+    limites:[
+      "Não sei se essas receitas são de uma família só ou da comunidade toda, e isso muda quem tem direito de vender.",
+      "Não conheço o preço que as pessoas daí pagam por um doce caseiro.",
+      "Não sei se há regras da vigilância sanitária do município para venda de alimentos."
+    ],
+    ouvir:["As avós das receitas","Associação de moradores","Quem já vende comida na festa","Agente da Emater da região"]
+  };
+
+  const $=id=>document.getElementById(id);
+  const LABELS={problema:"Problema",publico:"Para quem",saberes:"Saberes do território",proposta:"Proposta de valor",teste:"Primeiro teste com R$ 0"};
+
+  function li(t){const e=document.createElement("li"); e.textContent=t; return e;}
+  function render(d){
+    const qs=$("qs"); qs.innerHTML=""; (d.perguntas||[]).slice(0,6).forEach(t=>qs.appendChild(li(String(t))));
+    const cv=$("canvas"); cv.innerHTML="";
+    Object.keys(LABELS).forEach(k=>{
+      const c=document.createElement("div"); c.className="cell"+(k==="proposta"?" wide":"")+(k==="teste"?" wide test":"");
+      const h=document.createElement("span"); h.className="k"; h.textContent=LABELS[k];
+      const p=document.createElement("p"); p.textContent=String((d.canvas||{})[k]||"—");
+      c.append(h,p); cv.appendChild(c);
+    });
+    const lm=$("limits"); lm.innerHTML=""; (d.limites||[]).slice(0,5).forEach(t=>lm.appendChild(li(String(t))));
+    const ls=$("listen"); ls.innerHTML=""; (d.ouvir||[]).slice(0,6).forEach(t=>{const s=document.createElement("span"); s.textContent=String(t); ls.appendChild(s);});
+  }
+  render(EXAMPLE);
+
+  const go=$("go"), stop=$("stop"), note=$("note"), badge=$("badge");
+  let sample=null, ctl=null;
+  go.disabled=true;
+  const ready=window.claude && window.claude.use ? window.claude.use("sample") : Promise.resolve(null);
+  ready.then(s=>{
+    sample=s;
+    if(!s){go.hidden=true; note.textContent="A IA não está disponível nesta visualização. O exemplo ao lado mostra como a devolutiva funciona.";return;}
+    go.disabled=false; note.textContent="Edite os campos com a sua ideia e peça a orientação.";
+  }).catch(()=>{go.hidden=true; note.textContent="A IA não está disponível nesta visualização.";});
+
+  $("form").addEventListener("submit",async ev=>{
+    ev.preventDefault();
+    if(!sample) return;
+    const f={prob:$("prob").value.trim(),lugar:$("lugar").value.trim(),quem:$("quem").value.trim(),saber:$("saber").value.trim(),ideia:$("ideia").value.trim()};
+    if(!f.prob){note.textContent="Descreva o problema ou a oportunidade primeiro.";return;}
+    ctl=new AbortController(); go.disabled=true; stop.hidden=false;
+    note.textContent="O mentor está pensando. Pode levar até um minuto.";
+    $("out").style.opacity=".55";
+    const prompt=[
+      "Você é um mentor de educação empreendedora para jovens de comunidades brasileiras, inclusive periferias, zonas rurais, quilombos e aldeias.",
+      "Princípios: faça mais perguntas do que dê respostas; parta dos saberes e recursos que a comunidade já tem; proponha testes baratos; nunca descreva a comunidade como carente ou exótica; seja honesto sobre o que você, como IA, não tem como saber sobre aquele lugar.",
+      "Escreva em português do Brasil simples, frases curtas, falando com um jovem de 16 anos.",
+      "",
+      "Dados do jovem:",
+      "Problema ou oportunidade: "+f.prob,
+      "Lugar: "+(f.lugar||"não informado"),
+      "Quem sente: "+(f.quem||"não informado"),
+      "Saberes e recursos locais: "+(f.saber||"não informado"),
+      "Ideia inicial: "+(f.ideia||"nenhuma ainda"),
+      "",
+      'Responda apenas com um objeto JSON neste formato: {"perguntas":[5 perguntas provocadoras],"canvas":{"problema":"","publico":"","saberes":"","proposta":"","teste":"um primeiro teste que custe zero ou quase zero, concreto, para esta semana"},"limites":[3 coisas que você, IA, não sabe sobre esse território e que mudam a decisão],"ouvir":[3 a 5 pessoas ou grupos da comunidade a ouvir]}. Cada texto com no máximo 30 palavras.'
+    ].join("\n");
+    try{
+      const d=await sample.json(prompt,{signal:ctl.signal,cache:false});
+      if(!d||typeof d!=="object"||!Array.isArray(d.perguntas)) throw {code:"invalid_json"};
+      render(d); badge.textContent="Gerado agora pela IA"; badge.classList.add("live");
+      note.textContent="Leia com calma. As perguntas valem mais do que o canvas.";
+    }catch(e){
+      const c=e&&e.code;
+      if(c==="not_granted"||c==="sampling_disabled"){go.hidden=true; note.textContent="A IA não foi liberada nesta visualização. O exemplo continua visível.";}
+      else if(c==="rate_limited") note.textContent="Muitos pedidos seguidos. Espere um pouco e tente de novo.";
+      else if(c==="invalid_json") note.textContent="A resposta veio em formato inesperado. Tente de novo.";
+      else if(c!=="cancelled") note.textContent="O mentor não respondeu agora. Tente de novo em instantes.";
+      else note.textContent="Pedido interrompido.";
+    }finally{go.disabled=!sample; stop.hidden=true; $("out").style.opacity="1";}
+  });
+  stop.addEventListener("click",()=>ctl&&ctl.abort());
+})();
+</script>

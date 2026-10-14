@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Protótipos TekoIA · Daniel Quiteque</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@700&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+:root{--bg:#f6f7f2;--surface:#fff;--ink:#1d2a22;--muted:#5b6b60;--line:#d9e0d6;--accent:#b8401e;--head:#24324a;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#141a16;--surface:#1c241f;--ink:#e7ede8;--muted:#a3b2a8;--line:#2f3b33;--accent:#ec7a55;--head:#b9c6e0;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 "Source Sans 3","Segoe UI",system-ui,sans-serif;padding:48px 16px}
+main{max-width:860px;margin:0 auto;display:grid;gap:28px}
+h1,h2{font-family:"Zilla Slab",Georgia,serif;color:var(--head);margin:0;line-height:1.15}
+h1{font-size:clamp(2rem,5vw,2.8rem)}
+p{margin:0}
+.eyebrow{font-size:.78rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.lede{color:var(--muted);font-size:1.12rem;max-width:62ch}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+a.card{display:grid;gap:8px;padding:22px;border:1px solid var(--line);border-radius:14px;background:var(--surface);color:inherit;text-decoration:none}
+a.card:hover,a.card:focus-visible{border-color:var(--accent);outline:none}
+a.card span{font-weight:700;color:var(--accent)}
+footer{font-size:.9rem;color:var(--muted);border-top:1px solid var(--line);padding-top:16px}
+</style>
+</head>
+<body>
+<main>
+  <span class="eyebrow">IA, educação e território</span>
+  <h1>Protótipos para o TekoIA</h1>
+  <p class="lede">Dois protótipos de letramento crítico em IA para jovens e educadores. O princípio é o mesmo nos dois: a IA pergunta mais do que responde, e quem conhece o território decide o que é verdade sobre ele.</p>
+  <div class="cards">
+    <a class="card" href="oficina-territorio.html"><h2>A IA conhece o meu território?</h2><p>Apostila interativa de uma oficina de 3 horas. Os jovens testam o que a IA sabe, erra e apaga sobre a comunidade, e produzem o conhecimento que falta.</p><span>Abrir a apostila →</span></a>
+    <a class="card" href="mentor-territorio.html"><h2>Mentor do Território</h2><p>Educação empreendedora com IA. Em vez de um plano pronto, o mentor devolve perguntas, um canvas do território e os limites do que a IA sabe sobre aquele lugar.</p><span>Abrir o app →</span></a>
+  </div>
+  <footer>Daniel Quiteque · daniel.dataq@gmail.com · A geração com IA ao vivo funciona na versão hospedada no claude.ai. Aqui as páginas mostram o fluxo com exemplos.</footer>
+</main>
+</body>
+</html>
